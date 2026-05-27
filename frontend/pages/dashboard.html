@@ -1,0 +1,2207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>🌱 Smart Agriculture Advisor — Dashboard</title>
+
+  <!-- Fonts & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ===== CSS VARIABLES ===== */
+    :root {
+      /* Vibrant Gradient Colors */
+      --gradient-green: linear-gradient(135deg, #2ecc71, #27ae60);
+      --gradient-blue: linear-gradient(135deg, #3498db, #2980b9);
+      --gradient-purple: linear-gradient(135deg, #9b59b6, #8e44ad);
+      --gradient-orange: linear-gradient(135deg, #e67e22, #d35400);
+      --gradient-red: linear-gradient(135deg, #e74c3c, #c0392b);
+      --gradient-teal: linear-gradient(135deg, #1abc9c, #16a085);
+      --gradient-yellow: linear-gradient(135deg, #f1c40f, #f39c12);
+      --gradient-pink: linear-gradient(135deg, #e84393, #fd79a8);
+      
+      /* Background & UI */
+      --bg-primary: linear-gradient(165deg, #0c2b1e, #1a4d34, #2e7d32);
+      --bg-secondary: rgba(255, 255, 255, 0.1);
+      --bg-card: rgba(255, 255, 255, 0.98);
+      --bg-glass: rgba(255, 255, 255, 0.15);
+      --bg-dark: #0a291f;
+      
+      /* Text Colors */
+      --text-light: #ffffff;
+      --text-muted: rgba(255, 255, 255, 0.8);
+      --text-dark: #1a472a;
+      --text-green: #2ecc71;
+      --text-blue: #3498db;
+      
+      /* Shadows & Effects */
+      --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.2);
+      --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.15);
+      --shadow-sm: 0 5px 15px rgba(0, 0, 0, 0.1);
+      --glow-green: 0 0 25px rgba(46, 204, 113, 0.4);
+      --glow-blue: 0 0 25px rgba(52, 152, 219, 0.4);
+      --glow-purple: 0 0 25px rgba(155, 89, 182, 0.4);
+      
+      /* Borders & Radius */
+      --radius-xl: 20px;
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+      --border-glass: 1px solid rgba(255, 255, 255, 0.2);
+      
+      /* Transitions */
+      --transition-smooth: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      --transition-fast: all 0.25s ease;
+    }
+    
+    /* ===== RESET & BASE STYLES ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    html, body {
+      height: 100%;
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-light);
+      overflow-x: hidden;
+      position: relative;
+    }
+    
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 10% 20%, rgba(46, 204, 113, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 90% 80%, rgba(52, 152, 219, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(26, 188, 156, 0.1) 0%, transparent 50%);
+      z-index: -2;
+      pointer-events: none;
+    }
+    
+    /* ===== ANIMATED BACKGROUND ===== */
+    .floating-leaves {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+    
+    .leaf {
+      position: absolute;
+      font-size: 24px;
+      opacity: 0.1;
+      animation: floatLeaf 20s infinite linear;
+    }
+    
+    @keyframes floatLeaf {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      25% { transform: translate(100px, 50px) rotate(90deg); }
+      50% { transform: translate(50px, 100px) rotate(180deg); }
+      75% { transform: translate(-50px, 50px) rotate(270deg); }
+    }
+    
+    /* ===== MAIN CONTAINER ===== */
+    .dashboard-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+      position: relative;
+      z-index: 10;
+    }
+    
+    /* ===== HEADER ===== */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 30px;
+      margin-bottom: 30px;
+      background: var(--bg-glass);
+      backdrop-filter: blur(15px);
+      border-radius: var(--radius-xl);
+      border: var(--border-glass);
+      box-shadow: var(--shadow-md);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: var(--gradient-green);
+    }
+    
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .logo {
+      width: 60px;
+      height: 60px;
+      background: var(--gradient-green);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      color: white;
+      box-shadow: var(--glow-green);
+    }
+    
+    .logo-text h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      background: linear-gradient(45deg, #2ecc71, #3498db);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 4px;
+    }
+    
+    .logo-text p {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    
+    .user-section {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-lg);
+      border: var(--border-glass);
+      transition: var(--transition-fast);
+      cursor: pointer;
+    }
+    
+    .user-profile:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+    
+    .user-avatar {
+      width: 45px;
+      height: 45px;
+      background: var(--gradient-green);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: white;
+    }
+    
+    .user-info h3 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+    
+    .user-info p {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    
+    .header-controls {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .control-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: var(--radius-md);
+      background: var(--gradient-green);
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: var(--transition-fast);
+      font-size: 14px;
+    }
+    
+    .control-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .lang-btn {
+      background: var(--gradient-blue);
+    }
+    
+    /* ===== HERO SECTION ===== */
+    .hero-section {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 25px;
+      margin-bottom: 40px;
+    }
+    
+    .wisdom-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-xl);
+      padding: 30px;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      overflow: hidden;
+      color: var(--text-dark);
+    }
+    
+    .wisdom-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 6px;
+      height: 100%;
+      background: var(--gradient-green);
+    }
+    
+    .wisdom-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .wisdom-icon {
+      width: 50px;
+      height: 50px;
+      background: var(--gradient-green);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: white;
+    }
+    
+    .wisdom-header h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+    
+    .wisdom-quote {
+      font-size: 18px;
+      font-style: italic;
+      color: #2c3e50;
+      margin-bottom: 15px;
+      line-height: 1.6;
+    }
+    
+    .wisdom-subtitle {
+      font-size: 14px;
+      color: #7f8c8d;
+    }
+    
+    .stats-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    .stats-card {
+      background: var(--bg-glass);
+      backdrop-filter: blur(10px);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      border: var(--border-glass);
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-top: 10px;
+    }
+    
+    .stat-item {
+      text-align: center;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-md);
+    }
+    
+    .stat-value {
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 5px;
+      color: var(--text-green);
+    }
+    
+    .stat-label {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    
+    .actions-card {
+      background: var(--bg-glass);
+      backdrop-filter: blur(10px);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      border: var(--border-glass);
+    }
+    
+    .actions-card h3 {
+      margin-bottom: 15px;
+      font-size: 18px;
+    }
+    
+    .quick-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .action-btn {
+      padding: 12px 15px;
+      border: none;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: var(--transition-fast);
+    }
+    
+    .action-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateX(5px);
+    }
+    
+    .action-btn.primary {
+      background: var(--gradient-green);
+      font-weight: 600;
+    }
+    
+    /* ===== FEATURES GRID ===== */
+    .features-section {
+      margin-bottom: 40px;
+    }
+    
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 25px;
+    }
+    
+    .section-header h2 {
+      font-size: 28px;
+      font-weight: 800;
+      background: linear-gradient(45deg, #2ecc71, #3498db);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      position: relative;
+      display: inline-block;
+    }
+    
+    .section-header h2::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 50px;
+      height: 3px;
+      background: var(--gradient-green);
+      border-radius: 2px;
+    }
+    
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+    }
+    
+    .feature-card {
+      background: var(--bg-glass);
+      backdrop-filter: blur(10px);
+      border-radius: var(--radius-lg);
+      padding: 25px;
+      border: var(--border-glass);
+      transition: var(--transition-smooth);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-lg);
+      background: rgba(255, 255, 255, 0.2);
+    }
+    
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: var(--gradient-green);
+      transform: scaleX(0);
+      transition: transform 0.4s ease;
+      transform-origin: left;
+    }
+    
+    .feature-card:hover::before {
+      transform: scaleX(1);
+    }
+    
+    .feature-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+    
+    .feature-icon {
+      width: 55px;
+      height: 55px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: white;
+    }
+    
+    .disease-icon { background: var(--gradient-red); }
+    .fert-icon { background: var(--gradient-blue); }
+    .irrigation-icon { background: var(--gradient-teal); }
+    .crop-icon { background: var(--gradient-green); }
+    .market-icon { background: var(--gradient-orange); }
+    .yield-icon { background: var(--gradient-purple); }
+    
+    .feature-title h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+    
+    .feature-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+    
+    .feature-actions {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .feature-btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: var(--transition-fast);
+      font-size: 13px;
+    }
+    
+    .learn-btn {
+      background: transparent;
+      color: white;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .use-btn {
+      background: var(--gradient-green);
+      color: white;
+    }
+    
+    .learn-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+    
+    .use-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+    
+    /* ===== FEATURE DETAIL AREA ===== */
+    .feature-detail-area {
+      margin-top: 40px;
+      margin-bottom: 50px;
+      animation: fadeInUp 0.5s ease;
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .detail-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-xl);
+      padding: 30px;
+      box-shadow: var(--shadow-lg);
+      color: var(--text-dark);
+    }
+    
+    .detail-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+    
+    .detail-header h3 {
+      font-size: 24px;
+      font-weight: 800;
+      background: linear-gradient(45deg, #2ecc71, #3498db);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    
+    .detail-close {
+      background: #ff6b6b;
+      color: white;
+      border: none;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 18px;
+      transition: var(--transition-fast);
+    }
+    
+    .detail-close:hover {
+      transform: rotate(90deg);
+    }
+    
+    /* Form Styles */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 25px;
+    }
+    
+    .form-group {
+      margin-bottom: 15px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      transition: var(--transition-fast);
+      background: white;
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: #2ecc71;
+      box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.2);
+    }
+    
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 25px;
+    }
+    
+    .primary-btn {
+      padding: 12px 24px;
+      background: var(--gradient-green);
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: var(--transition-fast);
+    }
+    
+    .primary-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .secondary-btn {
+      padding: 12px 24px;
+      background: transparent;
+      color: #666;
+      border: 2px solid #ddd;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+    
+    .secondary-btn:hover {
+      background: #f8f8f8;
+      border-color: #999;
+    }
+    
+    .result-pre {
+      background: #f7fff7;
+      border: 1px solid #e6f3e6;
+      padding: 15px;
+      border-radius: var(--radius-md);
+      white-space: pre-wrap;
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #2c3e50;
+      margin-top: 20px;
+    }
+    
+    /* ===== LEARN MODAL ===== */
+    .learn-modal-overlay {
+      position: fixed;
+      inset: 0;
+      display: none;
+      background: rgba(10, 20, 10, 0.7);
+      backdrop-filter: blur(5px);
+      z-index: 1200;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    
+    .learn-modal {
+      width: 100%;
+      max-width: 800px;
+      background: var(--bg-card);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      max-height: calc(100vh - 100px);
+      animation: modalSlideIn 0.4s ease;
+    }
+    
+    @keyframes modalSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .learn-modal header {
+      background: linear-gradient(90deg, #2ecc71, #3498db);
+      padding: 20px 25px;
+      color: white;
+    }
+    
+    .learn-modal h2 {
+      margin: 0 0 5px 0;
+      font-size: 22px;
+    }
+    
+    .learn-modal .meta {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    
+    .learn-modal .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: none;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 20px;
+    }
+    
+    .modal-body {
+      padding: 25px;
+      max-height: 50vh;
+      overflow-y: auto;
+    }
+    
+    .steps ol {
+      padding-left: 20px;
+      color: #333;
+      line-height: 1.8;
+    }
+    
+    .example {
+      background: #f7fff7;
+      border: 1px solid #e6f3e6;
+      padding: 15px;
+      border-radius: var(--radius-md);
+      margin-top: 15px;
+      font-family: monospace;
+      white-space: pre-wrap;
+      color: #2c3e50;
+    }
+    
+    .tips {
+      margin-top: 15px;
+      color: #7f8c8d;
+      font-size: 14px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: var(--radius-md);
+    }
+    
+    .modal-footer {
+      padding: 20px 25px;
+      background: #f8f9fa;
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+    
+    /* ===== TOAST NOTIFICATION ===== */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      padding: 15px 20px;
+      background: var(--gradient-green);
+      color: white;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      display: none;
+      align-items: center;
+      gap: 12px;
+      z-index: 1000;
+      animation: slideInRight 0.3s ease;
+    }
+    
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    
+    .toast.error {
+      background: var(--gradient-red);
+    }
+    
+    /* ===== RESPONSIVE DESIGN ===== */
+    @media (max-width: 1200px) {
+      .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (max-width: 992px) {
+      .hero-section {
+        grid-template-columns: 1fr;
+      }
+      
+      .header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+      }
+      
+      .user-section {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .header-controls {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .form-actions {
+        flex-direction: column;
+      }
+      
+      .primary-btn, .secondary-btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+    
+    /* ===== SCROLLBAR STYLING ===== */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: var(--gradient-green);
+      border-radius: 10px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(45deg, #27ae60, #2980b9);
+    }
+  </style>
+</head>
+<body>
+  <!-- Animated Background Leaves -->
+  <div class="floating-leaves" id="floatingLeaves"></div>
+  
+  <!-- Main Dashboard Container -->
+  <div class="dashboard-container">
+    
+    <!-- Header Section -->
+    <header class="header">
+      <div class="logo-section">
+        <div class="logo">
+          <i class="fas fa-seedling"></i>
+        </div>
+        <div class="logo-text">
+          <h1>🌱 Smart Agriculture Advisor</h1>
+          <p>AI-powered farming intelligence for modern agriculture</p>
+        </div>
+      </div>
+      
+      <div class="user-section">
+        <div class="user-profile">
+          <div class="user-avatar" id="avatar">SA</div>
+          <div class="user-info">
+            <h3 id="userName">Guest</h3>
+            <p id="userMobile">Not signed in</p>
+          </div>
+        </div>
+        
+        <div class="header-controls">
+          <button class="control-btn lang-btn" onclick="location.href='language.html'">
+            <i class="fas fa-globe"></i>
+            <span id="langLabel">EN</span>
+          </button>
+          <button class="control-btn" onclick="location.href='landing.html'">
+            <i class="fas fa-home"></i>
+            Home
+          </button>
+        </div>
+      </div>
+    </header>
+    
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="wisdom-card">
+        <div class="wisdom-header">
+          <div class="wisdom-icon">
+            <i class="fas fa-lightbulb"></i>
+          </div>
+          <h2>🌾 Daily Wisdom</h2>
+        </div>
+        <p class="wisdom-quote" id="wisdomQuote">"Healthy soil grows healthy profits."</p>
+        <p class="wisdom-subtitle">Warm welcome to smart agriculture. Use our features and grow your healthy crops to make them beneficial for you.</p>
+        <img src="/mnt/data/4ce65cc0-1765-43fa-b546-057253a77bde.png" alt="farm" style="width: 120px; height: 100%; border-radius: 10px; object-fit: cover; margin-left: 12px; float: right;" onerror="this.style.display='none'"/>
+      </div>
+      
+      <div class="stats-actions">
+        <div class="stats-card">
+          <h3>📊 Quick Stats</h3>
+          <div class="stats-grid">
+            <div class="stat-item">
+              <div class="stat-value" id="statHealth">92%</div>
+              <div class="stat-label">Crop Health</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="statTemp">28°C</div>
+              <div class="stat-label">Temperature</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="actions-card">
+          <h3>⚡ Quick Actions</h3>
+          <div class="quick-actions">
+            <button class="action-btn primary" onclick="selectFeature('disease')">
+              <i class="fas fa-microscope"></i>
+              Detect Disease
+            </button>
+            <button class="action-btn" onclick="selectFeature('crop')">
+              <i class="fas fa-seedling"></i>
+              Crop Recommendation
+            </button>
+            <button class="action-btn" onclick="selectFeature('irrigation')">
+              <i class="fas fa-tint"></i>
+              Irrigation Advice
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Features Grid Section -->
+    <section class="features-section">
+      <div class="section-header">
+        <h2>🚀 AI-Powered Features</h2>
+        <div class="control-btn" style="background: var(--gradient-purple);">
+          <i class="fas fa-rocket"></i>
+          <span>6 Amazing Tools</span>
+        </div>
+      </div>
+      
+      <div class="features-grid">
+        <!-- Disease Detection -->
+        <div class="feature-card">
+          <div class="feature-header">
+            <div class="feature-icon disease-icon">
+              <i class="fas fa-microscope"></i>
+            </div>
+            <div class="feature-title">
+              <h3>🦠 Disease Detection</h3>
+              <p>Advanced AI Analysis</p>
+            </div>
+          </div>
+          <p class="feature-desc">Upload leaf photo and get diagnosis + treatment instructions.</p>
+          <div class="feature-actions">
+            <button class="feature-btn learn-btn" onclick="openLearn('disease')">
+              <i class="fas fa-book"></i> Learn
+            </button>
+            <button class="feature-btn use-btn" onclick="selectFeature('disease')">
+              <i class="fas fa-play"></i> Use
+            </button>
+          </div>
+        </div>
+        
+        <!-- Fertilizer Advisor -->
+        <div class="feature-card">
+          <div class="feature-header">
+            <div class="feature-icon fert-icon">
+              <i class="fas fa-flask"></i>
+            </div>
+            <div class="feature-title">
+              <h3>🧪 Fertilizer Advisor</h3>
+              <p>Precision Nutrition</p>
+            </div>
+          </div>
+          <p class="feature-desc">Enter NPK values to get a crop-specific plan & cost estimate.</p>
+          <div class="feature-actions">
+            <button class="feature-btn learn-btn" onclick="openLearn('fert')">
+              <i class="fas fa-book"></i> Learn
+            </button>
+            <button class="feature-btn use-btn" onclick="selectFeature('fert')">
+              <i class="fas fa-play"></i> Use
+            </button>
+          </div>
+        </div>
+        
+        <!-- Smart Irrigation -->
+        <div class="feature-card">
+          <div class="feature-header">
+            <div class="feature-icon irrigation-icon">
+              <i class="fas fa-tint"></i>
+            </div>
+            <div class="feature-title">
+              <h3>💧 Smart Irrigation</h3>
+              <p>Water Optimization</p>
+            </div>
+          </div>
+          <p class="feature-desc">Get weather-aware watering schedules to save water and optimize growth.</p>
+          <div class="feature-actions">
+            <button class="feature-btn learn-btn" onclick="openLearn('irrigation')">
+              <i class="fas fa-book"></i> Learn
+            </button>
+            <button class="feature-btn use-btn" onclick="selectFeature('irrigation')">
+              <i class="fas fa-play"></i> Use
+            </button>
+          </div>
+        </div>
+        
+        <!-- Crop Recommendation -->
+        <div class="feature-card">
+          <div class="feature-header">
+            <div class="feature-icon crop-icon">
+              <i class="fas fa-seedling"></i>
+            </div>
+            <div class="feature-title">
+              <h3>🌾 Crop Recommendation</h3>
+              <p>Smart Selection</p>
+            </div>
+          </div>
+          <p class="feature-desc">AI recommendations for best crops based on soil & climate conditions.</p>
+          <div class="feature-actions">
+            <button class="feature-btn learn-btn" onclick="openLearn('crop')">
+              <i class="fas fa-book"></i> Learn
+            </button>
+            <button class="feature-btn use-btn" onclick="selectFeature('crop')">
+              <i class="fas fa-play"></i> Use
+            </button>
+          </div>
+        </div>
+        
+        <!-- Market Insights -->
+        <div class="feature-card">
+          <div class="feature-header">
+            <div class="feature-icon market-icon">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="feature-title">
+              <h3>📈 Market Insights</h3>
+              <p>Real-time Analytics</p>
+            </div>
+          </div>
+          <p class="feature-desc">Realtime mandi prices and predicted trends for better selling decisions.</p>
+          <div class="feature-actions">
+            <button class="feature-btn learn-btn" onclick="openLearn('market')">
+              <i class="fas fa-book"></i> Learn
+            </button>
+            <button class="feature-btn use-btn" onclick="selectFeature('market')">
+              <i class="fas fa-play"></i> Use
+            </button>
+          </div>
+        </div>
+        
+        <!-- Yield Prediction -->
+        <div class="feature-card">
+          <div class="feature-header">
+            <div class="feature-icon yield-icon">
+              <i class="fas fa-calculator"></i>
+            </div>
+            <div class="feature-title">
+              <h3>📊 Yield Prediction</h3>
+              <p>Accurate Forecasting</p>
+            </div>
+          </div>
+          <p class="feature-desc">Plan finances with expected yields and income estimates.</p>
+          <div class="feature-actions">
+            <button class="feature-btn learn-btn" onclick="openLearn('yield')">
+              <i class="fas fa-book"></i> Learn
+            </button>
+            <button class="feature-btn use-btn" onclick="selectFeature('yield')">
+              <i class="fas fa-play"></i> Use
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Feature Detail Area -->
+    <section class="feature-detail-area" id="featureArea">
+      <!-- Feature details will be dynamically inserted here -->
+    </section>
+  </div>
+  
+  <!-- Learn Modal -->
+  <div id="learnOverlay" class="learn-modal-overlay" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="learn-modal" role="document" aria-labelledby="learnTitle">
+      <header>
+        <div>
+          <h2 id="learnTitle">Feature</h2>
+          <div class="meta" id="learnMeta">Short summary</div>
+        </div>
+        <button class="close-btn" id="learnCloseBtn" aria-label="Close">&times;</button>
+      </header>
+
+      <div class="modal-body" id="learnBody"></div>
+
+      <footer class="modal-footer">
+        <button class="primary-btn" id="learnGotIt">Got it</button>
+      </footer>
+    </div>
+  </div>
+  
+  <!-- Toast Notification -->
+  <div id="toast" class="toast">
+    <i class="fas fa-check-circle"></i>
+    <span id="toastMessage">Operation completed successfully!</span>
+  </div>
+
+  <script>
+  (function(){
+    document.addEventListener('DOMContentLoaded', () => {
+      const API_BASE = (window.__API_BASE || 'http://127.0.0.1:8000') + '/api';
+
+      // Create floating leaves
+      function createFloatingLeaves() {
+        const container = document.getElementById('floatingLeaves');
+        const leafCount = 10;
+        const leaves = ['🍃', '🌿', '🍂', '🍁', '🌱'];
+        
+        for (let i = 0; i < leafCount; i++) {
+          const leaf = document.createElement('div');
+          leaf.className = 'leaf';
+          leaf.textContent = leaves[Math.floor(Math.random() * leaves.length)];
+          
+          leaf.style.left = `${Math.random() * 100}%`;
+          leaf.style.top = `${Math.random() * 100}%`;
+          leaf.style.animationDelay = `${Math.random() * 10}s`;
+          leaf.style.animationDuration = `${15 + Math.random() * 20}s`;
+          leaf.style.fontSize = `${20 + Math.random() * 20}px`;
+          
+          container.appendChild(leaf);
+        }
+      }
+
+      function showToast(msg, isError=false){
+        const t = document.getElementById('toast');
+        const toastMessage = document.getElementById('toastMessage');
+        
+        toastMessage.textContent = msg;
+        t.className = isError ? 'toast error' : 'toast';
+        t.style.display = 'flex';
+        setTimeout(()=> t.style.display='none', 3500);
+      }
+      
+      function fmt(n, d=2){
+        if (n===undefined || n===null || isNaN(Number(n))) return '-';
+        return Number(n).toFixed(d);
+      }
+      
+      function escapeHtml(str){
+        if (str === null || str === undefined) return '';
+        return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+      }
+
+      // Learn modal logic and content
+      const overlay = document.getElementById('learnOverlay');
+      const titleEl = document.getElementById('learnTitle');
+      const metaEl = document.getElementById('learnMeta');
+      const bodyEl = document.getElementById('learnBody');
+      const closeBtn = document.getElementById('learnCloseBtn');
+      const gotItBtn = document.getElementById('learnGotIt');
+
+      const LEARN_CONTENT = {
+        disease: {
+          title:'Disease Detection — How to use',
+          meta:'Identify leaf diseases by uploading a clear photo. Benefit: early action reduces yield loss.',
+          steps:[
+            'Take a clear photo of one affected leaf (good lighting, close-up).',
+            'Click Use → Detect Disease and upload the image file.',
+            'Wait — result shows disease name, confidence and treatment notes.',
+            'If uncertain, try another photo or consult local extension with the saved image.'
+          ],
+          example:'Upload "leaf1.jpg" — Model says "early_blight (78%)". Treatment: Apply fungicide and remove infected leaves.',
+          tips:'Capture full lesion area and include a healthy portion of the leaf for context.'
+        },
+        fert: {
+          title:'Fertilizer Advisor — How to use',
+          meta:'Get crop-specific fertilizer plan & cost estimate from N-P-K values.',
+          steps:[
+            'Collect soil test result (N,P,K values).',
+            'Open Fertilizer Advisor, enter Crop and current N,P,K values.',
+            'Click "Get Plan" — tool returns DAP/Urea/MOP suggestions and estimated costs.',
+            'Follow recommended split dosing for Urea when shown.'
+          ],
+          example:'Crop: rice, N=40,P=12,K=20 → plan: DAP, Urea split doses; estimated cost shown.',
+          tips:'Ensure units are kg/acre. When unsure, confirm with extension services.'
+        },
+        irrigation: {
+          title:'Smart Irrigation — How to use',
+          meta:'Weather-aware watering advice to save water and avoid overwatering.',
+          steps:[
+            'Enter Location (city/village), Crop, Soil moisture (%) and Area (acres).',
+            'Click "Get Advice". The system fetches local weather and estimates next 24h rain.',
+            'It computes mm required, liters for your area and pump runtime.',
+            'Use advice to irrigate now or wait for rain and adjust pump schedules.'
+          ],
+          example:'Location: Hyderabad, Soil moisture 35%, Area 1 acre → "Irrigate soon: 20 mm needed; Volume ~80,937 L".',
+          tips:'Provide accurate soil moisture or recent rainfall for best results.'
+        },
+        crop: {
+          title:'Crop Recommendation — How to use',
+          meta:'AI recommends crops suited to your soil and recent climate.',
+          steps:[
+            'Enter soil parameters (N,P,K), pH, temperature and recent rainfall.',
+            'Click "Predict" — model returns recommended crop(s) and reasons.',
+            'Review probabilities if available to understand alternatives.',
+            'Combine model output with market demand and cropping calendar.'
+          ],
+          example:'High rainfall & N-rich soil → Recommended: rice or maize depending on market.',
+          tips:'Local market/prices and irrigation availability are important alongside model output.'
+        },
+        market: {
+          title:'Market Insights — How to use',
+          meta:'Compare mandi prices and find the best market to sell your crop.',
+          steps:[
+            'Enter Crop and Location (nearest city or mandi).',
+            'Click "Get Market Prices" — API returns current prices and a trend.',
+            'Review recommended market and predicted trend.',
+            'Factor in transport costs when choosing where to sell.'
+          ],
+          example:'Crop=tomato, Location=Hyderabad → hyderabad: ₹3500, hyderabad-market-1: ₹3630.',
+          tips:'Small price differences may be offset by transport costs.'
+        },
+        yield: {
+          title:'Yield Prediction — How to use',
+          meta:'Estimate expected harvest and income from area and inputs.',
+          steps:[
+            'Enter Crop and Area (acres). Optionally add prev yield, N,P,K, pH, temp, rainfall.',
+            'Click "Predict Yield". Backend uses model (if loaded) or baseline averages.',
+            'Result shows predicted yield/acre, total harvest and estimated income.',
+            'Use estimate for planning labor, inputs and expected revenue.'
+          ],
+          example:'Crop=rice, Area=2 acres, Prev yield=30 → Predicted yield/acre 32, Total harvest 64, Income ₹121,600.',
+          tips:'Provide accurate past yields and soil tests for better accuracy.'
+        }
+      };
+
+      function openLearnModal(content){
+        if(!content) return;
+        titleEl.textContent = content.title || 'Feature';
+        metaEl.textContent = content.meta || '';
+        let html = '';
+        if(content.steps && content.steps.length){
+          html += '<div class="steps"><strong>Step-by-step:</strong><ol>';
+          for(const s of content.steps) html += `<li>${escapeHtml(s)}</li>`;
+          html += '</ol></div>';
+        }
+        if(content.example){
+          html += `<div class="example"><strong>Example</strong>\n${escapeHtml(content.example)}</div>`;
+        }
+        if(content.tips){
+          html += `<div class="tips"><strong>Tips:</strong> ${escapeHtml(content.tips)}</div>`;
+        }
+        bodyEl.innerHTML = html;
+        overlay.style.display = 'flex';
+        overlay.setAttribute('aria-hidden','false');
+        closeBtn.focus();
+      }
+      
+      function closeLearnModal(){ 
+        overlay.style.display='none'; 
+        overlay.setAttribute('aria-hidden','true'); 
+      }
+
+      closeBtn.addEventListener('click', closeLearnModal);
+      gotItBtn.addEventListener('click', closeLearnModal);
+      overlay.addEventListener('click', (ev)=> { 
+        if(ev.target === overlay) closeLearnModal(); 
+      });
+      
+      document.addEventListener('keydown', (ev)=> { 
+        if(ev.key === 'Escape' && overlay.style.display === 'flex') closeLearnModal(); 
+      });
+
+      // Initialize floating leaves
+      createFloatingLeaves();
+      
+      // Set user info
+      document.getElementById('userName').textContent = localStorage.getItem('user_name') || 'Guest';
+      document.getElementById('userMobile').textContent = localStorage.getItem('user_mobile') || 'Not signed in';
+      document.getElementById('langLabel').textContent = (localStorage.getItem('selected_lang') || 'en').toUpperCase();
+      
+      // Set avatar
+      const userName = localStorage.getItem('user_name') || 'Guest';
+      document.getElementById('avatar').textContent = userName.substring(0, 2).toUpperCase();
+
+      // Expose openLearn to buttons
+      window.openLearn = function(feature){
+        const key = (feature || '').toString().trim().toLowerCase();
+        const content = LEARN_CONTENT[key];
+        if(content) openLearnModal(content);
+        else openLearnModal({ 
+          title:'Feature help', 
+          meta:'How to use', 
+          steps:['Open the feature with Use button', 'Follow on-screen instructions'], 
+          example:'No example available.'
+        });
+      };
+
+      // Main feature selector (FULL FUNCTIONALITY PRESERVED)
+      window.selectFeature = function(name){
+        const area = document.getElementById('featureArea');
+        area.innerHTML = '';
+
+        // DISEASE DETECTION
+        if(name === 'disease'){
+          area.innerHTML = `
+            <div class="detail-card">
+              <div class="detail-header">
+                <h3>🦠 Disease Detection</h3>
+                <button class="detail-close" onclick="document.getElementById('featureArea').innerHTML=''">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+              <div style="display:flex;gap:20px;flex-wrap:wrap">
+                <div style="flex:1;min-width:300px">
+                  <div class="form-group">
+                    <label><i class="fas fa-image"></i> Leaf Image</label>
+                    <input id="dFile" type="file" accept="image/*" class="form-input">
+                  </div>
+                  <div style="width:100%;height:200px;border-radius:12px;background:#f8f9fa;border:2px dashed #ddd;display:flex;align-items:center;justify-content:center;margin-top:15px;overflow:hidden" id="dPreview">
+                    <div style="text-align:center;color:#888;">
+                      <i class="fas fa-cloud-upload-alt" style="font-size:40px;margin-bottom:10px;"></i>
+                      <p>No image selected</p>
+                    </div>
+                  </div>
+                  <div class="form-actions">
+                    <button class="primary-btn" id="dDetectBtn">
+                      <i class="fas fa-magnifying-glass"></i> Detect Disease
+                    </button>
+                    <button class="secondary-btn" id="dClearBtn">Clear</button>
+                  </div>
+                </div>
+                <div style="flex:1;min-width:300px">
+                  <h4 style="color:#2c3e50;margin-bottom:10px;"><i class="fas fa-clipboard-check"></i> Results</h4>
+                  <pre id="dResult" class="result-pre">No detection yet. Upload an image to begin analysis.</pre>
+                  <div id="dSavedImageLink" style="margin-top:15px;"></div>
+                </div>
+              </div>
+            </div>
+          `;
+
+          const dFileInput = document.getElementById('dFile');
+          const dPreview = document.getElementById('dPreview');
+          
+          dFileInput.addEventListener('change', (e)=>{
+            const f = e.target.files && e.target.files[0];
+            if(!f){ 
+              dPreview.innerHTML = `
+                <div style="text-align:center;color:#888;">
+                  <i class="fas fa-cloud-upload-alt" style="font-size:40px;margin-bottom:10px;"></i>
+                  <p>No image selected</p>
+                </div>
+              `; 
+              return; 
+            }
+            const url = URL.createObjectURL(f);
+            dPreview.innerHTML = `
+              <img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:10px;">
+            `;
+          });
+
+          document.getElementById('dDetectBtn').addEventListener('click', async ()=>{
+            const files = document.getElementById('dFile').files;
+            if(!files || !files[0]){ 
+              showToast('Please select an image first', true); 
+              return; 
+            }
+            
+            const fd = new FormData(); 
+            fd.append('file', files[0]);
+            document.getElementById('dResult').textContent = '📤 Uploading & analyzing... Please wait.';
+            document.getElementById('dSavedImageLink').innerHTML = '';
+            
+            try{
+              const r = await fetch(API_BASE + '/detect_disease', {method:'POST', body: fd});
+              if(!r.ok){ 
+                const t = await r.text(); 
+                document.getElementById('dResult').textContent='❌ Server error: ' + t; 
+                showToast('Detection failed', true); 
+                return; 
+              }
+              
+              const data = await r.json();
+              const disease = data.disease || 'unknown';
+              const confidenceRaw = data.confidence ?? 0;
+              const confidence = Math.round((Number(confidenceRaw) || 0) * 100);
+              const treatment = data.treatment || 'N/A';
+              const modelUsed = data.model_used ? 'Model' : 'Placeholder';
+              
+              let out = `✅ Disease Detected: ${disease}\n📊 Confidence: ${confidence}%\n\n💊 Treatment / Notes:\n${treatment}\n\n🔧 Source: ${modelUsed}`;
+              
+              if (data.error) out += `\n\n⚠️ (Error: ${data.error})`;
+              document.getElementById('dResult').textContent = out;
+              
+              if (data.saved_image) {
+                let linkHtml = '';
+                try {
+                  const saved = data.saved_image;
+                  if (/^https?:\/\//.test(String(saved))) {
+                    linkHtml = `<a href="${escapeHtml(saved)}" target="_blank" rel="noopener" style="color:#2ecc71;text-decoration:none;">
+                      <i class="fas fa-external-link-alt"></i> View saved image
+                    </a>`;
+                  } else {
+                    const hostUrl = new URL(API_BASE).origin;
+                    const maybe = saved.startsWith('/') ? hostUrl + saved : hostUrl + '/' + saved;
+                    linkHtml = `<a href="${escapeHtml(maybe)}" target="_blank" rel="noopener" style="color:#2ecc71;text-decoration:none;">
+                      <i class="fas fa-external-link-alt"></i> View saved image
+                    </a>`;
+                  }
+                } catch(e){
+                  linkHtml = `<div style="color:#7f8c8d;font-size:13px;">
+                    <i class="fas fa-image"></i> Saved image: ${escapeHtml(data.saved_image)}
+                  </div>`;
+                }
+                document.getElementById('dSavedImageLink').innerHTML = linkHtml;
+              }
+              
+              showToast('✅ Disease detection complete!');
+              
+            }catch(err){ 
+              document.getElementById('dResult').textContent = '❌ Request failed: ' + err.message; 
+              showToast('Request failed', true); 
+            }
+          });
+
+          document.getElementById('dClearBtn').addEventListener('click', ()=>{
+            document.getElementById('dFile').value = '';
+            dPreview.innerHTML = `
+              <div style="text-align:center;color:#888;">
+                <i class="fas fa-cloud-upload-alt" style="font-size:40px;margin-bottom:10px;"></i>
+                <p>No image selected</p>
+              </div>
+            `;
+            document.getElementById('dResult').textContent = 'Cleared. Upload an image to begin analysis.';
+            document.getElementById('dSavedImageLink').innerHTML = '';
+            showToast('Cleared all inputs');
+          });
+
+        // CROP RECOMMENDATION
+        } else if(name === 'crop') {
+          area.innerHTML = `
+            <div class="detail-card">
+              <div class="detail-header">
+                <h3>🌾 Crop Recommendation</h3>
+                <button class="detail-close" onclick="document.getElementById('featureArea').innerHTML=''">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label><i class="fas fa-atom"></i> Nitrogen (N)</label>
+                  <input id="mN" type="number" class="form-input" placeholder="e.g., 40">
+                </div>
+                <div class="form-group">
+                  <label><i class="fas fa-atom"></i> Phosphorus (P)</label>
+                  <input id="mP" type="number" class="form-input" placeholder="e.g., 12">
+                </div>
+                <div class="form-group">
+                  <label><i class="fas fa-atom"></i> Potassium (K)</label>
+                  <input id="mK" type="number" class="form-input" placeholder="e.g., 20">
+                </div>
+                <div class="form-group">
+                  <label><i class="fas fa-thermometer-half"></i> Temperature (°C)</label>
+                  <input id="mTemperature" type="number" class="form-input" placeholder="e.g., 28">
+                </div>
+                <div class="form-group">
+                  <label><i class="fas fa-water"></i> Humidity (%)</label>
+                  <input id="mHumidity" type="number" class="form-input" placeholder="e.g., 65">
+                </div>
+                <div class="form-group">
+                  <label><i class="fas fa-vial"></i> pH Level</label>
+                  <input id="mPh" type="number" step="0.1" class="form-input" placeholder="e.g., 6.5">
+                </div>
+                <div class="form-group" style="grid-column:1/-1">
+                  <label><i class="fas fa-cloud-rain"></i> Rainfall (mm)</label>
+                  <input id="mRainfall" type="number" class="form-input" placeholder="e.g., 800">
+                </div>
+              </div>
+              
+              <div class="form-actions">
+                <button class="primary-btn" id="mPredictBtn">
+                  <i class="fas fa-brain"></i> Predict Best Crops
+                </button>
+                <button class="secondary-btn" id="mClearBtn">Clear All</button>
+              </div>
+              
+              <div style="margin-top:25px">
+                <h4 style="color:#2c3e50;margin-bottom:10px;"><i class="fas fa-clipboard-list"></i> Recommendation Results</h4>
+                <pre id="mResult" class="result-pre">Enter your soil and climate parameters to get crop recommendations.</pre>
+              </div>
+            </div>
+          `;
+
+          document.getElementById('mPredictBtn').addEventListener('click', async ()=>{
+            const payload = {
+              N: parseFloat(document.getElementById('mN').value)||0,
+              P: parseFloat(document.getElementById('mP').value)||0,
+              K: parseFloat(document.getElementById('mK').value)||0,
+              temperature: parseFloat(document.getElementById('mTemperature').value)||0,
+              humidity: parseFloat(document.getElementById('mHumidity').value)||0,
+              ph: parseFloat(document.getElementById('mPh').value)||0,
+              rainfall: parseFloat(document.getElementById('mRainfall').value)||0,
+              soil_type: ''
+            };
+            
+            const resEl = document.getElementById('mResult'); 
+            resEl.textContent = '🤖 Analyzing your inputs... Please wait.';
+            
+            try{
+              const r = await fetch(API_BASE + '/predict_crop', {
+                method:'POST', 
+                headers:{'Content-Type':'application/json'}, 
+                body: JSON.stringify(payload)
+              });
+              
+              if(!r.ok){ 
+                const t = await r.text(); 
+                resEl.textContent = '❌ Server error: ' + t; 
+                showToast('Prediction failed', true); 
+                return; 
+              }
+              
+              const data = await r.json();
+              const recommended = Array.isArray(data.recommended) ? data.recommended : (data.recommended ? [data.recommended] : []);
+              const reasons = data.reasons || '';
+              
+              let out = '🌱 Recommended Crops: ' + (recommended.length ? recommended.join(', ') : 'N/A') + '\n\n📝 Why these crops are suitable:\n' + (reasons || 'N/A');
+              
+              if(data.probabilities){
+                out += '\n\n📊 Probability Scores:\n' + JSON.stringify(data.probabilities, null, 2);
+              }
+              
+              resEl.textContent = out;
+              showToast('✅ Crop recommendation ready!');
+              
+            }catch(err){ 
+              resEl.textContent = '❌ Request failed: ' + err.message; 
+              showToast('Request failed', true); 
+            }
+          });
+          
+          document.getElementById('mClearBtn').addEventListener('click', ()=>{ 
+            ['mN','mP','mK','mTemperature','mHumidity','mPh','mRainfall'].forEach(id=>{ 
+              const el=document.getElementById(id); 
+              if(el) el.value=''; 
+            }); 
+            document.getElementById('mResult').textContent = 'Cleared. Enter new parameters to get recommendations.'; 
+            showToast('Cleared all inputs');
+          });
+
+        // FERTILIZER ADVISOR
+        } else if(name === 'fert') {
+          area.innerHTML = `
+            <div class="detail-card">
+              <div class="detail-header">
+                <h3>🧪 Fertilizer Advisor</h3>
+                <button class="detail-close" onclick="document.getElementById('featureArea').innerHTML=''">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label><i class="fas fa-seedling"></i> Crop Type</label>
+                  <input id="fCrop" class="form-input" placeholder="e.g., rice, wheat, maize">
+                </div>
+                <div class="form-group">
+                  <label><i class="fas fa-atom"></i> Current Nitrogen (N) - kg/acre</label>
+                  <input id="fN" type="number" class="form-input" placeholder="e.g., 40">
+                </div>
+                <div class="form-group">
+                  <label><i class="fas fa-atom"></i> Current Phosphorus (P) - kg/acre</label>
+                  <input id="fP" type="number" class="form-input" placeholder="e.g., 12">
+                </div>
+                <div class="form-group">
+                  <label><i class="fas fa-atom"></i> Current Potassium (K) - kg/acre</label>
+                  <input id="fK" type="number" class="form-input" placeholder="e.g., 20">
+                </div>
+              </div>
+              
+              <div class="form-actions">
+                <button class="primary-btn" id="fGetBtn">
+                  <i class="fas fa-calculator"></i> Get Fertilizer Plan
+                </button>
+                <button class="secondary-btn" id="fClearBtn">Clear</button>
+              </div>
+              
+              <div style="margin-top:25px">
+                <h4 style="color:#2c3e50;margin-bottom:10px;"><i class="fas fa-clipboard-list"></i> Fertilizer Plan</h4>
+                <div id="fPlanText" style="font-weight:700;color:#2c3e50;margin-bottom:15px;">
+                  Enter crop and soil values to get fertilizer recommendations.
+                </div>
+                <table id="fTable" class="fert-table" style="display:none;width:100%;border-collapse:collapse;margin-top:15px;background:#f8f9fa;border-radius:8px;overflow:hidden;">
+                  <thead style="background:#2ecc71;color:white;">
+                    <tr>
+                      <th style="padding:12px;text-align:left;">Fertilizer</th>
+                      <th style="padding:12px;text-align:left;">Quantity (kg/acre)</th>
+                      <th style="padding:12px;text-align:left;">Cost (₹)</th>
+                    </tr>
+                  </thead>
+                  <tbody id="fTableBody"></tbody>
+                  <tfoot style="background:#27ae60;color:white;font-weight:700;">
+                    <tr>
+                      <td style="padding:12px;">Total</td>
+                      <td id="fTotalKg" style="padding:12px;">-</td>
+                      <td id="fTotalCost" style="padding:12px;">-</td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+          `;
+          
+          document.getElementById('fGetBtn').addEventListener('click', async ()=>{
+            const payload = { 
+              crop:(document.getElementById('fCrop').value||'').trim(), 
+              n:parseFloat(document.getElementById('fN').value)||0, 
+              p:parseFloat(document.getElementById('fP').value)||0, 
+              k:parseFloat(document.getElementById('fK').value)||0 
+            };
+            
+            document.getElementById('fPlanText').textContent = '🧪 Analyzing soil data... Calculating fertilizer plan.';
+            document.getElementById('fTable').style.display = 'none';
+            
+            try{
+              const r = await fetch(API_BASE + '/fertilizer', {
+                method:'POST', 
+                headers:{'Content-Type':'application/json'}, 
+                body: JSON.stringify(payload)
+              });
+              
+              if(!r.ok){ 
+                const t = await r.text(); 
+                document.getElementById('fPlanText').textContent = '❌ Server error: ' + t; 
+                showToast('Fertilizer analysis failed', true); 
+                return; 
+              }
+              
+              const data = await r.json();
+              const planText = data.fertilizer_plan || data.plan || data.recommendation || '';
+              document.getElementById('fPlanText').textContent = planText || 'No specific plan returned.';
+              
+              const breakdown = data.cost_breakdown || data.breakdown || data.details || data.costs || null;
+              const tbody = document.getElementById('fTableBody'); 
+              tbody.innerHTML='';
+              
+              let totalKg = 0, totalCost = 0;
+              
+              if (breakdown && typeof breakdown === 'object' && Object.keys(breakdown).length) {
+                document.getElementById('fTable').style.display = 'table';
+                
+                for (const [prod, info] of Object.entries(breakdown)) {
+                  let kgText = '-', costText = '-';
+                  
+                  if (info === null || info === undefined) { 
+                    kgText='-'; 
+                    costText='-'; 
+                  }
+                  else if (typeof info === 'number') { 
+                    kgText = fmt(info,2); 
+                  }
+                  else if (typeof info === 'string') { 
+                    kgText = escapeHtml(info); 
+                  }
+                  else if (typeof info === 'object') {
+                    const kgVal = info.kg ?? info.quantity ?? info.qty ?? info.amount;
+                    const costVal = info.cost ?? info.price ?? info.cost_inr ?? info.estimated;
+                    kgText = kgVal !== undefined ? fmt(kgVal,2) : '-';
+                    costText = costVal !== undefined ? fmt(costVal,2) : '-';
+                  }
+                  
+                  const tr = document.createElement('tr');
+                  tr.innerHTML = `
+                    <td style="padding:12px;border-bottom:1px solid #eee;">${escapeHtml(prod)}</td>
+                    <td style="padding:12px;border-bottom:1px solid #eee;">${kgText}</td>
+                    <td style="padding:12px;border-bottom:1px solid #eee;">${costText}</td>
+                  `;
+                  tbody.appendChild(tr);
+                  
+                  const kgNum = Number(String(kgText).replace(/[^0-9.\-]/g,'')) || 0;
+                  const costNum = Number(String(costText).replace(/[^0-9.\-]/g,'')) || 0;
+                  totalKg += kgNum;
+                  totalCost += costNum;
+                }
+                
+                document.getElementById('fTotalKg').textContent = fmt(totalKg,2);
+                document.getElementById('fTotalCost').textContent = fmt(totalCost,2);
+                
+              } else {
+                document.getElementById('fTable').style.display = 'none';
+              }
+              
+              window.__lastFertilizerPlan = data;
+              showToast('✅ Fertilizer plan ready!');
+              
+            }catch(err){ 
+              document.getElementById('fPlanText').textContent = '❌ Request failed: ' + err.message; 
+              showToast('Request failed', true); 
+            }
+          });
+          
+          document.getElementById('fClearBtn').addEventListener('click', ()=>{ 
+            ['fCrop','fN','fP','fK'].forEach(i=>{ 
+              const el=document.getElementById(i); 
+              if(el) el.value=''; 
+            }); 
+            document.getElementById('fPlanText').textContent='Enter crop and soil values to get fertilizer recommendations.'; 
+            document.getElementById('fTable').style.display='none'; 
+            window.__lastFertilizerPlan=null; 
+            showToast('Cleared all inputs');
+          });
+
+        // IRRIGATION ADVICE
+        } else if(name === 'irrigation'){
+          area.innerHTML = `
+            <div class="detail-card">
+              <div class="detail-header">
+                <h3>💧 Smart Irrigation</h3>
+                <button class="detail-close" onclick="document.getElementById('featureArea').innerHTML=''">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label><i class="fas fa-map-marker-alt"></i> Location</label>
+                  <input id="irLocation" class="form-input" placeholder="e.g., Hyderabad">
+                </div>
+                <div class="form-group">
+                  <label><i class="fas fa-seedling"></i> Crop</label>
+                  <input id="irCrop" class="form-input" placeholder="e.g., rice, cotton">
+                </div>
+                <div class="form-group">
+                  <label><i class="fas fa-tint"></i> Soil Moisture (%)</label>
+                  <input id="irSoil" type="number" class="form-input" placeholder="e.g., 35">
+                </div>
+                <div class="form-group">
+                  <label><i class="fas fa-ruler-combined"></i> Area (acres)</label>
+                  <input id="irArea" type="number" class="form-input" value="1" placeholder="e.g., 1">
+                </div>
+              </div>
+              
+              <div class="form-actions">
+                <button class="primary-btn" id="irGetBtn">
+                  <i class="fas fa-cloud-sun-rain"></i> Get Irrigation Advice
+                </button>
+                <button class="secondary-btn" id="irClearBtn">Clear</button>
+              </div>
+              
+              <div style="margin-top:25px">
+                <div id="irPlaceholder" style="color:#7f8c8d;font-size:14px;padding:15px;background:#f8f9fa;border-radius:8px;">
+                  Enter your location and crop details to receive personalized irrigation advice.
+                </div>
+                <div id="irDataArea" style="display:none;margin-top:20px;padding:20px;background:#f7fff7;border-radius:8px;border-left:4px solid #2ecc71;">
+                  <!-- Results will be inserted here -->
+                </div>
+              </div>
+            </div>
+          `;
+
+          document.getElementById('irGetBtn').addEventListener('click', async ()=>{
+            const areaInput = document.getElementById('irArea').value;
+            const payload = {
+              location: document.getElementById('irLocation').value || '',
+              crop: document.getElementById('irCrop').value || '',
+              soil_moisture: document.getElementById('irSoil').value ? parseFloat(document.getElementById('irSoil').value) : null,
+              area_acres: areaInput ? parseFloat(areaInput) : 1.0
+            };
+            
+            if(!payload.location && payload.soil_moisture === null && !payload.crop){ 
+              showToast('Please provide location, soil moisture, or crop details', true); 
+              return; 
+            }
+            
+            try{
+              document.getElementById('irPlaceholder').textContent = '🌤️ Checking weather data... Analyzing irrigation needs...';
+              
+              const r = await fetch(API_BASE + '/irrigation_advice', {
+                method:'POST', 
+                headers:{'Content-Type':'application/json'}, 
+                body: JSON.stringify(payload)
+              });
+              
+              if(!r.ok){ 
+                const t = await r.text(); 
+                throw new Error(t); 
+              }
+              
+              const data = await r.json();
+              const areaEl = document.getElementById('irDataArea');
+              areaEl.style.display='block';
+              
+              areaEl.innerHTML = `
+                <h4 style="color:#2c3e50;margin-bottom:15px;">
+                  <i class="fas fa-calendar-check"></i> Irrigation Recommendation
+                </h4>
+                <div style="background:#2ecc71;color:white;padding:12px;border-radius:6px;margin-bottom:15px;font-weight:600;">
+                  ${escapeHtml(data.when || 'N/A')}
+                </div>
+                <div style="color:#666;margin-bottom:15px;line-height:1.6;">
+                  ${escapeHtml(data.notes || '')}
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:15px;margin-top:20px;">
+                  <div style="background:white;padding:15px;border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,0.1);">
+                    <div style="font-size:12px;color:#7f8c8d;margin-bottom:5px;">Water Required</div>
+                    <div style="font-size:20px;font-weight:700;color:#2ecc71;">
+                      ${data.how_much_mm !== undefined ? escapeHtml(String(data.how_much_mm)) + ' mm' : 'N/A'}
+                    </div>
+                  </div>
+                  <div style="background:white;padding:15px;border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,0.1);">
+                    <div style="font-size:12px;color:#7f8c8d;margin-bottom:5px;">Total Volume</div>
+                    <div style="font-size:20px;font-weight:700;color:#3498db;">
+                      ${data.how_much_liters !== undefined ? Number(data.how_much_liters).toLocaleString() + ' L' : 'N/A'}
+                    </div>
+                    <div style="font-size:11px;color:#95a5a6;">for ${payload.area_acres || 1} acre(s)</div>
+                  </div>
+                  ${data.pump_duration_minutes ? `
+                  <div style="background:white;padding:15px;border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,0.1);">
+                    <div style="font-size:12px;color:#7f8c8d;margin-bottom:5px;">Pump Runtime</div>
+                    <div style="font-size:20px;font-weight:700;color:#9b59b6;">
+                      ${escapeHtml(String(data.pump_duration_minutes))} minutes
+                    </div>
+                  </div>
+                  ` : ''}
+                </div>
+              `;
+              
+              document.getElementById('irPlaceholder').textContent = '';
+              showToast('✅ Irrigation advice ready!');
+              
+            }catch(err){ 
+              document.getElementById('irPlaceholder').textContent = '❌ Error: ' + err.message; 
+              showToast('Request failed', true); 
+            }
+          });
+          
+          document.getElementById('irClearBtn').addEventListener('click', ()=>{ 
+            ['irLocation','irCrop','irSoil','irArea'].forEach(i=>{ 
+              const el=document.getElementById(i); 
+              if(el) el.value=''; 
+            }); 
+            document.getElementById('irArea').value = '1';
+            document.getElementById('irDataArea').style.display='none';
+            document.getElementById('irPlaceholder').textContent = 'Enter your location and crop details to receive personalized irrigation advice.';
+            showToast('Cleared all inputs');
+          });
+
+        // MARKET INSIGHTS
+        } else if (name === 'market') {
+          area.innerHTML = `
+            <div class="detail-card">
+              <div class="detail-header">
+                <h3>📈 Market Insights</h3>
+                <button class="detail-close" onclick="document.getElementById('featureArea').innerHTML=''">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label><i class="fas fa-seedling"></i> Crop Name</label>
+                  <input id="mktCrop" class="form-input" placeholder="e.g., tomato, rice, wheat">
+                </div>
+                <div class="form-group">
+                  <label><i class="fas fa-map-marker-alt"></i> Location/Mandi</label>
+                  <input id="mktLocation" class="form-input" placeholder="e.g., Hyderabad, Delhi">
+                </div>
+              </div>
+              
+              <div class="form-actions">
+                <button class="primary-btn" id="mktGetBtn">
+                  <i class="fas fa-search-dollar"></i> Get Market Prices
+                </button>
+                <button class="secondary-btn" id="mktClearBtn">Clear</button>
+              </div>
+              
+              <div style="margin-top:25px">
+                <h4 style="color:#2c3e50;margin-bottom:10px;"><i class="fas fa-chart-bar"></i> Market Data</h4>
+                <pre id="mktResult" class="result-pre">Enter crop and location to fetch current market prices and trends.</pre>
+              </div>
+            </div>
+          `;
+          
+          document.getElementById('mktGetBtn').addEventListener('click', async () => {
+            const crop = (document.getElementById('mktCrop').value || '').trim();
+            const location = (document.getElementById('mktLocation').value || '').trim();
+            
+            if (!crop || !location) { 
+              showToast('Please enter both crop and location', true); 
+              return; 
+            }
+            
+            const resEl = document.getElementById('mktResult');
+            resEl.textContent = '📡 Fetching market data... Please wait.';
+            
+            try {
+              const r = await fetch(API_BASE + '/market_price', { 
+                method: 'POST', 
+                headers: { 'Content-Type': 'application/json' }, 
+                body: JSON.stringify({ crop, location }) 
+              });
+              
+              if (!r.ok) { 
+                const t = await r.text(); 
+                throw new Error(t || `HTTP ${r.status}`); 
+              }
+              
+              const data = await r.json();
+              let out = `📍 Location: ${location}\n🌱 Crop: ${crop}\n\n💰 Current Prices:\n`;
+              
+              if (data.current_prices && typeof data.current_prices === 'object') {
+                for (const [market, price] of Object.entries(data.current_prices)) {
+                  out += ` • ${market}: ₹${Number(price).toLocaleString()}/quintal\n`;
+                }
+              } else out += ' • N/A (No price data available)\n';
+              
+              out += `\n📈 Trend: ${data.predicted_trend || 'N/A'}`;
+              if (data.best_market) out += `\n🏆 Recommended market: ${data.best_market}`;
+              
+              resEl.textContent = out;
+              showToast('✅ Market data loaded successfully!');
+              
+            } catch (err) {
+              resEl.textContent = '❌ Error: ' + (err.message || err);
+              showToast('Market request failed', true);
+            }
+          });
+          
+          document.getElementById('mktClearBtn').addEventListener('click', () => {
+            ['mktCrop','mktLocation'].forEach(id => { 
+              const el = document.getElementById(id); 
+              if (el) el.value = ''; 
+            });
+            document.getElementById('mktResult').textContent = 'Enter crop and location to fetch current market prices and trends.';
+            showToast('Cleared all inputs');
+          });
+
+        // YIELD PREDICTION
+        } else if(name === 'yield'){
+          area.innerHTML = `
+            <div class="detail-card">
+              <div class="detail-header">
+                <h3>📊 Yield Prediction</h3>
+                <button class="detail-close" onclick="document.getElementById('featureArea').innerHTML=''">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label><i class="fas fa-seedling"></i> Crop Type</label>
+                  <input id="yCrop" class="form-input" placeholder="e.g., rice, wheat, maize">
+                </div>
+                <div class="form-group">
+                  <label><i class="fas fa-ruler-combined"></i> Area (acres)</label>
+                  <input id="yArea" type="number" class="form-input" value="1">
+                </div>
+                <div class="form-group">
+                  <label><i class="fas fa-chart-line"></i> Previous Yield per acre (optional)</label>
+                  <input id="yPrev" type="number" class="form-input" placeholder="e.g., 30">
+                </div>
+                <div class="form-group">
+                  <label><i class="fas fa-rupee-sign"></i> Expected Price per unit (₹, optional)</label>
+                  <input id="yPrice" type="number" class="form-input" placeholder="e.g., 1900">
+                </div>
+                <div class="form-group">
+                  <label><i class="fas fa-atom"></i> Nitrogen (N) - kg/acre (optional)</label>
+                  <input id="yN" type="number" class="form-input" placeholder="e.g., 40">
+                </div>
+                <div class="form-group">
+                  <label><i class="fas fa-atom"></i> Phosphorus (P) - kg/acre (optional)</label>
+                  <input id="yP" type="number" class="form-input" placeholder="e.g., 12">
+                </div>
+                <div class="form-group">
+                  <label><i class="fas fa-atom"></i> Potassium (K) - kg/acre (optional)</label>
+                  <input id="yK" type="number" class="form-input" placeholder="e.g., 20">
+                </div>
+                <div class="form-group">
+                  <label><i class="fas fa-vial"></i> Soil pH (optional)</label>
+                  <input id="yPh" type="number" step="0.1" class="form-input" placeholder="e.g., 6.5">
+                </div>
+                <div class="form-group">
+                  <label><i class="fas fa-thermometer-half"></i> Average Temperature (°C, 30d) (optional)</label>
+                  <input id="yTemp" type="number" class="form-input" placeholder="e.g., 28">
+                </div>
+                <div class="form-group" style="grid-column:1/-1">
+                  <label><i class="fas fa-cloud-rain"></i> Total Rainfall (last 30d, mm) (optional)</label>
+                  <input id="yRain" type="number" class="form-input" placeholder="e.g., 120">
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button class="primary-btn" id="yPredictBtn">
+                  <i class="fas fa-calculator"></i> Predict Yield
+                </button>
+                <button class="secondary-btn" id="yClearBtn">Clear All</button>
+              </div>
+
+              <div style="margin-top:25px">
+                <h4 style="color:#2c3e50;margin-bottom:10px;"><i class="fas fa-chart-pie"></i> Yield Prediction Results</h4>
+                <pre id="yResult" class="result-pre">Enter crop details to get yield predictions and income estimates.</pre>
+              </div>
+            </div>
+          `;
+
+          document.getElementById('yPredictBtn').addEventListener('click', async ()=>{
+            const crop = (document.getElementById('yCrop').value || '').trim();
+            const areaVal = parseFloat(document.getElementById('yArea').value) || 0;
+            
+            if(!crop){ 
+              showToast('Please enter crop name', true); 
+              return; 
+            }
+            
+            if(!areaVal || areaVal <= 0){ 
+              showToast('Please enter valid area in acres', true); 
+              return; 
+            }
+
+            const payload = {
+              crop: crop,
+              area_acres: areaVal,
+              prev_yield_per_acre: document.getElementById('yPrev').value ? Number(document.getElementById('yPrev').value) : undefined,
+              expected_price_per_unit: document.getElementById('yPrice').value ? Number(document.getElementById('yPrice').value) : undefined,
+              n: document.getElementById('yN').value ? Number(document.getElementById('yN').value) : undefined,
+              p: document.getElementById('yP').value ? Number(document.getElementById('yP').value) : undefined,
+              k: document.getElementById('yK').value ? Number(document.getElementById('yK').value) : undefined,
+              ph: document.getElementById('yPh').value ? Number(document.getElementById('yPh').value) : undefined,
+              avg_temp: document.getElementById('yTemp').value ? Number(document.getElementById('yTemp').value) : undefined,
+              total_rainfall_30d: document.getElementById('yRain').value ? Number(document.getElementById('yRain').value) : undefined
+            };
+
+            const resEl = document.getElementById('yResult');
+            resEl.textContent = '🤖 Analyzing data... Predicting yield...';
+            
+            try{
+              const r = await fetch(API_BASE + '/predict_yield', {
+                method:'POST', 
+                headers:{'Content-Type':'application/json'}, 
+                body: JSON.stringify(payload)
+              });
+              
+              if(!r.ok){
+                const txt = await r.text();
+                resEl.textContent = '❌ Server error: ' + txt;
+                showToast('Yield prediction failed', true);
+                return;
+              }
+              
+              const data = await r.json();
+              const perAcre = data.predicted_yield_per_acre ?? data.predicted_yield ?? null;
+              const total = data.total_harvest ?? null;
+              const income = data.estimated_income ?? null;
+              
+              let out = '';
+              if(perAcre !== null){ out += `🌾 Predicted yield per acre: ${perAcre} units\n`; }
+              if(total !== null){ out += `📦 Total expected harvest: ${total} units\n`; }
+              if(income !== null){ out += `💰 Estimated income: ₹ ${Number(income).toLocaleString()}\n`; }
+              
+              if(!out) out = JSON.stringify(data, null, 2);
+              resEl.textContent = out;
+              showToast('✅ Yield prediction ready!');
+              
+            }catch(err){
+              resEl.textContent = '❌ Request failed: ' + err.message;
+              showToast('Request failed', true);
+            }
+          });
+
+          document.getElementById('yClearBtn').addEventListener('click', ()=>{
+            ['yCrop','yArea','yPrev','yPrice','yN','yP','yK','yPh','yTemp','yRain'].forEach(id=>{ 
+              const el=document.getElementById(id); 
+              if(el) el.value=''; 
+            });
+            document.getElementById('yArea').value = '1';
+            document.getElementById('yResult').textContent = 'Enter crop details to get yield predictions and income estimates.';
+            showToast('Cleared all inputs');
+          });
+
+        } else {
+          area.innerHTML = `<div class="detail-card" style="text-align:center;padding:40px;">
+            <div style="font-size:60px;color:#2ecc71;margin-bottom:20px;">
+              <i class="fas fa-seedling"></i>
+            </div>
+            <h3 style="color:#2c3e50;margin-bottom:15px;">Select a Feature to Begin</h3>
+            <p style="color:#7f8c8d;">Choose any feature from the grid above to start using our AI-powered agriculture tools.</p>
+          </div>`;
+        }
+        
+        // Scroll to feature area
+        area.scrollIntoView({ behavior: 'smooth' });
+      };
+
+      // Default content
+      document.getElementById('featureArea').innerHTML = `<div class="detail-card" style="text-align:center;padding:40px;">
+        <div style="font-size:60px;color:#2ecc71;margin-bottom:20px;">
+          <i class="fas fa-seedling"></i>
+        </div>
+        <h3 style="color:#2c3e50;margin-bottom:15px;">Welcome to Smart Agriculture Dashboard</h3>
+        <p style="color:#7f8c8d;">Select any feature from the grid above to access AI-powered agriculture tools.</p>
+      </div>`;
+      
+      // Auto-refresh stats
+      setInterval(() => {
+        const health = document.getElementById('statHealth');
+        const temp = document.getElementById('statTemp');
+        
+        // Simulate small variations
+        const currentHealth = parseInt(health.textContent);
+        const currentTemp = parseInt(temp.textContent);
+        
+        const newHealth = Math.min(100, Math.max(85, currentHealth + (Math.random() * 2 - 1)));
+        const newTemp = Math.min(32, Math.max(26, currentTemp + (Math.random() * 0.5 - 0.25)));
+        
+        health.textContent = `${Math.round(newHealth)}%`;
+        temp.textContent = `${Math.round(newTemp)}°C`;
+      }, 30000);
+      
+      // Initial greeting
+      setTimeout(() => {
+        showToast('Welcome to Smart Agriculture Dashboard! 🚀');
+      }, 1000);
+      
+    }); // DOMContentLoaded end
+  })();
+  </script>
+</body>
+</html>

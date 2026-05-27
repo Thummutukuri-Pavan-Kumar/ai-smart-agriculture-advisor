@@ -1,0 +1,62 @@
+<!-- <!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Smart Agriculture Advisor</title>
+   Redirect to pages/landing.html using JS (safer and works even when served as file://) 
+  <meta name="robots" content="noindex">
+  <style>
+    html,body{height:100%;margin:0}
+    body{display:flex;align-items:center;justify-content:center;font-family:Inter,system-ui,Arial;background:#f1fff1;color:#2e7d32}
+    .msg{font-size:18px}
+  </style>
+  <script>
+    // immediate redirect
+    window.location.replace('pages/landing.html');
+  </script>
+</head>
+<body>
+  <div class="msg">Redirecting to Smart Agriculture Advisor...</div>
+</body>
+</html> -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Smart Agriculture Advisor</title>
+  <meta name="robots" content="noindex">
+  <style>
+    html,body{height:100%;margin:0}
+    body{display:flex;align-items:center;justify-content:center;font-family:Inter,system-ui,Arial;background:#f1fff1;color:#2e7d32}
+    .msg{font-size:18px}
+  </style>
+  <script>
+    (function () {
+      // If served over HTTP(S) use absolute path to avoid accidental doubling like "pages/pages/..."
+      // If opened as a local file (file://) absolute path won't work; use relative then.
+      try {
+        const relative = 'pages/landing.html';
+        const absolute = '/pages/landing.html';
+
+        if (location.protocol === 'file:') {
+          // local file open: use relative
+          location.replace(relative);
+        } else {
+          // web server: use absolute to avoid nested-relative issues
+          location.replace(absolute);
+        }
+      } catch (e) {
+        // fallback
+        location.replace('pages/landing.html');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <div class="msg">Redirecting to Smart Agriculture Advisor...</div>
+</body>
+</html>
+
+  

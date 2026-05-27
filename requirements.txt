@@ -1,0 +1,13 @@
+fastapi
+uvicorn[standard]
+pydantic
+sqlalchemy
+mysql-connector-python
+python-dotenv
+scikit-learn
+tensorflow
+pillow      # for image handling
+joblib
+requests    # calling external APIs
+multipart
+pandas

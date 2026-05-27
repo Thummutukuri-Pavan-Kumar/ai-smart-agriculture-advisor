@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Choose Your Language</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #2ecc71;
+      --primary-dark: #27ae60;
+      --secondary-color: #3498db;
+      --background: linear-gradient(135deg, #f8fff9 0%, #e6f7ff 100%);
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --shadow: 0 8px 20px rgba(46, 204, 113, 0.1);
+      --shadow-hover: 0 15px 30px rgba(46, 204, 113, 0.2);
+      --text-dark: #2c3e50;
+      --text-light: #7f8c8d;
+      --border-radius: 16px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Poppins', sans-serif;
+      background: var(--background);
+      color: var(--text-dark);
+      overflow-x: hidden;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 15px;
+      position: relative;
+    }
+
+    /* Animated background elements */
+    .bg-shapes {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .shape {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.08;
+    }
+
+    .shape:nth-child(1) {
+      width: 250px;
+      height: 250px;
+      background: var(--primary-color);
+      top: -100px;
+      right: -80px;
+      animation: float 25s infinite linear;
+    }
+
+    .shape:nth-child(2) {
+      width: 180px;
+      height: 180px;
+      background: var(--secondary-color);
+      bottom: -80px;
+      left: -40px;
+      animation: float 30s infinite linear reverse;
+    }
+
+    .shape:nth-child(3) {
+      width: 120px;
+      height: 120px;
+      background: #9b59b6;
+      top: 20%;
+      left: 5%;
+      animation: float 20s infinite linear;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translate(0, 0) rotate(0deg);
+      }
+      100% {
+        transform: translate(80px, 80px) rotate(360deg);
+      }
+    }
+
+    /* Main container */
+    .container {
+      max-width: 900px;
+      width: 100%;
+      z-index: 10;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+      animation: fadeInDown 0.8s ease;
+    }
+
+    .header h1 {
+      font-size: 2.4rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 12px;
+      position: relative;
+      display: inline-block;
+    }
+
+    .header h1::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 70px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+      border-radius: 2px;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: var(--text-light);
+      max-width: 550px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
+
+    /* Language grid - COMPACT DESIGN */
+    .languages-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 25px;
+      margin-bottom: 35px;
+    }
+
+    .language-row {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 18px;
+      width: 100%;
+    }
+
+    .language-card {
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 18px 15px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: var(--shadow);
+      border: 1.5px solid transparent;
+      position: relative;
+      overflow: hidden;
+      width: 150px; /* Fixed smaller width */
+      height: 140px; /* Fixed smaller height */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      transform: translateY(15px);
+      animation: fadeInUp 0.5s ease forwards;
+    }
+
+    /* Staggered animation delays for each row */
+    .row-1 .language-card:nth-child(1) { animation-delay: 0.1s; }
+    .row-1 .language-card:nth-child(2) { animation-delay: 0.2s; }
+    .row-1 .language-card:nth-child(3) { animation-delay: 0.3s; }
+    
+    .row-2 .language-card:nth-child(1) { animation-delay: 0.4s; }
+    .row-2 .language-card:nth-child(2) { animation-delay: 0.5s; }
+    .row-2 .language-card:nth-child(3) { animation-delay: 0.6s; }
+    
+    .row-3 .language-card:nth-child(1) { animation-delay: 0.7s; }
+    .row-3 .language-card:nth-child(2) { animation-delay: 0.8s; }
+    .row-3 .language-card:nth-child(3) { animation-delay: 0.9s; }
+    .row-3 .language-card:nth-child(4) { animation-delay: 1.0s; }
+
+    .language-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+      transform-origin: left;
+    }
+
+    .language-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-hover);
+      border-color: rgba(46, 204, 113, 0.2);
+    }
+
+    .language-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .language-card.selected {
+      border-color: var(--primary-color);
+      background: rgba(46, 204, 113, 0.05);
+    }
+
+    .language-card.selected::before {
+      transform: scaleX(1);
+    }
+
+    /* Flag and language info - SMALLER */
+    .flag {
+      font-size: 32px; /* Smaller flag */
+      margin-bottom: 8px;
+      transition: transform 0.3s ease;
+    }
+
+    .language-card:hover .flag {
+      transform: scale(1.15);
+    }
+
+    .language-name {
+      font-size: 1.1rem; /* Smaller font */
+      font-weight: 600;
+      margin-bottom: 3px;
+      color: var(--text-dark);
+      line-height: 1.2;
+    }
+
+    .language-native {
+      font-size: 0.85rem; /* Smaller font */
+      color: var(--text-light);
+      margin-bottom: 10px;
+      font-weight: 500;
+      line-height: 1.2;
+    }
+
+    .language-code {
+      display: inline-block;
+      padding: 4px 10px;
+      background: rgba(46, 204, 113, 0.1);
+      color: var(--primary-dark);
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    /* Continue button - COMPACT */
+    .continue-btn {
+      display: block;
+      margin: 30px auto 0;
+      padding: 14px 32px;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 18px rgba(46, 204, 113, 0.25);
+      opacity: 0;
+      transform: translateY(15px);
+      animation: fadeInUp 0.5s ease forwards 1.2s;
+      min-width: 220px;
+    }
+
+    .continue-btn:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 25px rgba(46, 204, 113, 0.4);
+    }
+
+    .continue-btn:active {
+      transform: translateY(0);
+    }
+
+    .continue-btn:disabled {
+      background: linear-gradient(90deg, #cccccc, #aaaaaa);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .continue-btn:disabled:hover {
+      transform: none;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .continue-btn i {
+      margin-left: 8px;
+      font-size: 0.9rem;
+      transition: transform 0.3s ease;
+    }
+
+    .continue-btn:hover i {
+      transform: translateX(4px);
+    }
+
+    /* Footer note */
+    .footer-note {
+      text-align: center;
+      margin-top: 30px;
+      color: var(--text-light);
+      font-size: 0.9rem;
+      opacity: 0;
+      animation: fadeIn 0.8s ease forwards 1.4s;
+    }
+
+    .footer-note i {
+      color: var(--primary-color);
+      margin-right: 5px;
+      font-size: 0.9rem;
+    }
+
+    /* Animations */
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-25px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 2rem;
+      }
+      
+      .subtitle {
+        font-size: 1rem;
+        padding: 0 10px;
+      }
+      
+      .language-row {
+        gap: 15px;
+      }
+      
+      .language-card {
+        width: 135px;
+        height: 130px;
+        padding: 15px 12px;
+      }
+      
+      .continue-btn {
+        padding: 12px 28px;
+        font-size: 0.95rem;
+        min-width: 200px;
+      }
+      
+      .flag {
+        font-size: 28px;
+      }
+      
+      .language-name {
+        font-size: 1rem;
+      }
+      
+      .language-native {
+        font-size: 0.8rem;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .language-row {
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+      }
+      
+      .language-card {
+        width: 100%;
+        max-width: 200px;
+        height: 120px;
+      }
+      
+      .languages-container {
+        gap: 15px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      body {
+        padding: 10px;
+      }
+      
+      .header h1 {
+        font-size: 1.7rem;
+      }
+      
+      .subtitle {
+        font-size: 0.9rem;
+      }
+      
+      .language-card {
+        height: 110px;
+        padding: 12px 10px;
+      }
+      
+      .flag {
+        font-size: 24px;
+        margin-bottom: 5px;
+      }
+      
+      .language-name {
+        font-size: 0.95rem;
+      }
+      
+      .language-native {
+        font-size: 0.75rem;
+        margin-bottom: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Animated background shapes -->
+  <div class="bg-shapes">
+    <div class="shape"></div>
+    <div class="shape"></div>
+    <div class="shape"></div>
+  </div>
+
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1><i class="fas fa-globe-americas"></i> Choose Language</h1>
+      <p class="subtitle">Select your preferred language. Your choice will be saved for future visits.</p>
+    </div>
+
+    <!-- Language Grid in ROWS (3 languages per row) -->
+    <div class="languages-container" id="langsContainer">
+      <!-- Rows will be inserted here by JavaScript -->
+    </div>
+
+    <!-- Continue Button -->
+    <button class="continue-btn" id="continueBtn" disabled>
+      Select a Language <i class="fas fa-arrow-right"></i>
+    </button>
+
+    <!-- Footer Note -->
+    <p class="footer-note">
+      <i class="fas fa-info-circle"></i> You can change this later in settings
+    </p>
+  </div>
+
+  <script>
+    // Language data with all languages
+    const languages = [
+      {code: 'en', label: 'English', native: 'English', flag: '🇬🇧', speakers: '1.5B'},
+      {code: 'te', label: 'Telugu', native: 'తెలుగు', flag: '🇮🇳', speakers: '85M'},
+      {code: 'hi', label: 'Hindi', native: 'हिन्दी', flag: '🇮🇳', speakers: '600M'},
+      {code: 'ta', label: 'Tamil', native: 'தமிழ்', flag: '🇮🇳', speakers: '80M'},
+      {code: 'kn', label: 'Kannada', native: 'ಕನ್ನಡ', flag: '🇮🇳', speakers: '44M'},
+      {code: 'ml', label: 'Malayalam', native: 'മലയാളം', flag: '🇮🇳', speakers: '38M'},
+      {code: 'mr', label: 'Marathi', native: 'मराठी', flag: '🇮🇳', speakers: '83M'},
+      {code: 'bn', label: 'Bengali', native: 'বাংলা', flag: '🇮🇳', speakers: '230M'},
+      {code: 'gu', label: 'Gujarati', native: 'ગુજરાતી', flag: '🇮🇳', speakers: '55M'},
+      {code: 'pa', label: 'Punjabi', native: 'ਪੰਜਾਬੀ', flag: '🇮🇳', speakers: '125M'},
+    ];
+
+    let selectedLanguage = null;
+
+    // Function to create language rows (3 languages per row)
+    function createLanguageRows() {
+      const container = document.getElementById('langsContainer');
+      
+      // Split languages into rows of 3
+      for (let i = 0; i < languages.length; i += 3) {
+        const row = document.createElement('div');
+        row.className = `language-row row-${Math.floor(i/3) + 1}`;
+        
+        // Get 3 languages for this row (or remaining)
+        const rowLanguages = languages.slice(i, i + 3);
+        
+        rowLanguages.forEach((lang, index) => {
+          const card = document.createElement('div');
+          card.className = 'language-card';
+          card.dataset.code = lang.code;
+          
+          card.innerHTML = `
+            <div class="flag">${lang.flag}</div>
+            <div class="language-name">${lang.label}</div>
+            <div class="language-native">${lang.native}</div>
+            <div class="language-code">${lang.code.toUpperCase()}</div>
+          `;
+          
+          // Add click event
+          card.addEventListener('click', () => selectLanguage(lang.code));
+          
+          // Add keyboard support
+          card.setAttribute('tabindex', '0');
+          card.setAttribute('role', 'button');
+          card.setAttribute('aria-label', `Select ${lang.label} language`);
+          card.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              selectLanguage(lang.code);
+            }
+          });
+          
+          row.appendChild(card);
+        });
+        
+        container.appendChild(row);
+      }
+    }
+
+    // Function to select a language
+    function selectLanguage(code) {
+      // Remove selected class from all cards
+      document.querySelectorAll('.language-card').forEach(card => {
+        card.classList.remove('selected');
+      });
+      
+      // Add selected class to clicked card
+      const selectedCard = document.querySelector(`[data-code="${code}"]`);
+      selectedCard.classList.add('selected');
+      
+      // Store selected language
+      selectedLanguage = languages.find(lang => lang.code === code);
+      
+      // Enable continue button
+      const continueBtn = document.getElementById('continueBtn');
+      continueBtn.disabled = false;
+      continueBtn.innerHTML = `Continue in ${selectedLanguage.label} <i class="fas fa-arrow-right"></i>`;
+      
+      // Add a nice animation to the selected card
+      selectedCard.style.transform = 'translateY(-8px) scale(1.05)';
+      setTimeout(() => {
+        selectedCard.style.transform = 'translateY(-8px)';
+      }, 200);
+    }
+
+    // Function to handle continue button click
+    function handleContinue() {
+      if (!selectedLanguage) return;
+      
+      // Save to localStorage
+      localStorage.setItem('selected_lang', selectedLanguage.code);
+      
+      // Show loading state on button
+      const continueBtn = document.getElementById('continueBtn');
+      continueBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Loading...`;
+      continueBtn.disabled = true;
+      
+      // Add a fade out effect to the whole page
+      document.querySelector('.container').style.opacity = '0.7';
+      document.querySelector('.container').style.transition = 'opacity 0.4s';
+      
+      // Redirect after a short delay
+      setTimeout(() => {
+        window.location.href = 'dashboard.html';
+      }, 600);
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      createLanguageRows();
+      
+      // Set up continue button
+      const continueBtn = document.getElementById('continueBtn');
+      continueBtn.addEventListener('click', handleContinue);
+      
+      // Auto-select previously chosen language if exists
+      const savedLang = localStorage.getItem('selected_lang');
+      if (savedLang && languages.some(lang => lang.code === savedLang)) {
+        // Delay selection to allow animations to complete
+        setTimeout(() => {
+          selectLanguage(savedLang);
+        }, 400);
+      }
+    });
+  </script>
+</body>
+</html>
